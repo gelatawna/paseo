@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { Agent, WorkspaceDescriptor } from "@/stores/session-store";
-import { selectActiveWorkspaceTabs } from "./active-workspace-tabs-model";
+import {
+  keepsSidebarProjectExpanded,
+  selectActiveWorkspaceTabs,
+} from "./active-workspace-tabs-model";
 
 function workspace(input: { id: string; project?: string; name?: string }): WorkspaceDescriptor {
   return {
@@ -75,6 +78,14 @@ function agent(input: {
 }
 
 describe("active-workspace-tabs-model", () => {
+  it("keeps only working and input-blocked workspace paths expanded", () => {
+    expect(keepsSidebarProjectExpanded("running")).toBe(true);
+    expect(keepsSidebarProjectExpanded("needs_input")).toBe(true);
+    expect(keepsSidebarProjectExpanded("finished")).toBe(false);
+    expect(keepsSidebarProjectExpanded("failed")).toBe(false);
+    expect(keepsSidebarProjectExpanded("idle")).toBe(false);
+  });
+
   it("shows every workspace and marks idle sessions as awaiting follow-up", () => {
     const active = workspace({ id: "active", project: "Acme", name: "API" });
     const idle = workspace({ id: "idle", project: "Acme", name: "Web" });

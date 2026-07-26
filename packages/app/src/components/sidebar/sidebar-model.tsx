@@ -21,7 +21,10 @@ import { useSidebarCollapsedSectionsStore } from "@/stores/sidebar-collapsed-sec
 import { resolveCollapsedProjectKeys } from "@/stores/sidebar-collapsed-sections-store/state";
 import { useSidebarViewStore, type SidebarGroupMode } from "@/stores/sidebar-view-store";
 import { useSessionStore } from "@/stores/session-store";
-import { selectActiveWorkspaceTabs } from "@/screens/workspace/active-workspace-tabs-model";
+import {
+  keepsSidebarProjectExpanded,
+  selectActiveWorkspaceTabs,
+} from "@/screens/workspace/active-workspace-tabs-model";
 import type { SidebarShortcutModel } from "@/utils/sidebar-shortcuts";
 import {
   buildSidebarProjectTree,
@@ -98,7 +101,12 @@ export function SidebarModelProvider({
     allProjectKeys.size > 0 &&
     Array.from(allProjectKeys).every((key) => expandedProjectKeys.has(key));
   const activeWorkspaceKeys = useMemo(
-    () => new Set(activeWorkspaceTabs.filter((tab) => tab.status !== "idle").map((tab) => tab.key)),
+    () =>
+      new Set(
+        activeWorkspaceTabs
+          .filter((tab) => keepsSidebarProjectExpanded(tab.status))
+          .map((tab) => tab.key),
+      ),
     [activeWorkspaceTabs],
   );
   const activeProjectPathKeys = useMemo(

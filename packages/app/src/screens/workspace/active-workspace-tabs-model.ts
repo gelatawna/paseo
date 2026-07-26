@@ -23,6 +23,10 @@ export interface ActiveWorkspaceTab {
   needsInputCount: number;
 }
 
+export function keepsSidebarProjectExpanded(status: ActiveWorkspaceStatus): boolean {
+  return status === "running" || status === "needs_input";
+}
+
 interface ActiveWorkspaceSessionState {
   workspaces: ReadonlyMap<string, WorkspaceDescriptor>;
   agents: ReadonlyMap<string, Agent>;
